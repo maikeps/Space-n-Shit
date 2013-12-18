@@ -2,6 +2,7 @@ package model;
 
 import java.util.Random;
 
+import model.interfaces.Diable;
 import model.interfaces.Movable;
 import model.interfaces.Shootable;
 import engine.GameObject;
@@ -13,6 +14,7 @@ import engine.physics.Vector2D;
 public class EnemyShip extends GameObject implements Movable, Shootable, Diable{
 
 	private Position2D positionToStop;
+	private Vector direction;
 	private int hp;
 	public boolean isDead;
 	public boolean canShoot;
@@ -25,6 +27,7 @@ public class EnemyShip extends GameObject implements Movable, Shootable, Diable{
 		gunBaseCooldown = 20;
 		Random random = new Random();
 		positionToStop = new Position2D(position.getComponent().getX(), random.nextInt((int)game.screenDimension.getHeight()*70/100));
+		direction = new Vector2D(0, 0);
 	}
 
 	@Override
@@ -52,6 +55,7 @@ public class EnemyShip extends GameObject implements Movable, Shootable, Diable{
 	@Override
 	public void move(Vector direction) {
 		if(position.getComponent().getY() < positionToStop.getComponent().getY()){
+			this.direction = direction;
 			position.applyVector(direction);
 		}
 	}
@@ -66,5 +70,25 @@ public class EnemyShip extends GameObject implements Movable, Shootable, Diable{
 	
 	public int getHp(){
 		return hp;
+	}
+
+	@Override
+	public boolean isGoingLeft() {
+		return direction.getComponent().getX() < 0;
+	}
+
+	@Override
+	public boolean isGoingRight() {
+		return direction.getComponent().getX() > 0;
+	}
+
+	@Override
+	public boolean isGoingUp() {
+		return direction.getComponent().getY() < 0;
+	}
+
+	@Override
+	public boolean isGoingDown() {
+		return direction.getComponent().getY() > 0;
 	}
 }

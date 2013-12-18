@@ -1,24 +1,54 @@
 package vision;
 
+import java.util.ArrayList;
+import java.util.List;
 
-import org.newdawn.slick.GameContainer;
+import model.Bullet;
+import model.EnemyShip;
+import model.PlayerShip;
+
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.state.StateBasedGame;
 
+import vision.interfaces.Drawable;
+import engine.GameObject;
+import engine.physics.BoundingBox2D;
 import engine.physics.Dimension2D;
-import engine.physics.Position2D;
+
+
 
 public class Drawer{
 	
-	public Position2D position;
-	public Dimension2D dimension;
+	public List<Drawable> drawableList;
 	
-	public Drawer(Position2D position, Dimension2D dimension){
-		this.position = position;
-		this.dimension = dimension;
+	public Drawer(){
+		drawableList = new ArrayList<Drawable>();
 	}
 	
-	public void draw(GameContainer gc, StateBasedGame game, Graphics g){
-		g.fillRect((int)position.getComponent().getX(), (int)position.getComponent().getY(), (int)dimension.getWidth(), (int)dimension.getHeight());
+	public void updateImages(ArrayList<GameObject> objects){
+		drawableList.clear();
+		for(GameObject gameObject : objects){
+			String ref = "res/spaceship.png";
+			if(gameObject instanceof PlayerShip){
+				ref = "res/spaceship.png";
+				if(((PlayerShip) gameObject).isGoingLeft()){
+					ref = "res/spaceship_left.png";
+				}else if(((PlayerShip) gameObject).isGoingRight()){
+					ref = "res/spaceship_right.png";
+				}	
+			}else if(gameObject instanceof EnemyShip){
+				ref = "res/enemyship.png";
+			}else if(gameObject instanceof Bullet){
+				ref = "res/bullet.png";
+			}
+			drawableList.add(new StaticImage(ref, gameObject.getPosition()));
+			
+			gameObject.setBoundingBox(new BoundingBox2D(gameObject.getPosition(), new Dimension2D(drawableList.get(drawableList.size()-1).getImage().getWidth(), drawableList.get(drawableList.size()-1).getImage().getHeight())));
+		}
+	}
+	
+	public void draw(Graphics g){
+		for(Drawable drawable : drawableList){
+			drawable.draw(g);
+		}
 	}
 }

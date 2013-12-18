@@ -4,6 +4,7 @@ import model.Game;
 import engine.interfaces.BoundingBox;
 import engine.interfaces.Dimension;
 import engine.interfaces.Position;
+import engine.interfaces.Vector;
 import engine.physics.BoundingBox2D;
 import engine.physics.Dimension2D;
 import engine.physics.Position2D;
@@ -42,4 +43,7 @@ public abstract class GameObject {
 		return dimension;
 	}
 
+	public void setBoundingBox(BoundingBox boundingBox) {
+		this.boundingBox = boundingBox;
+	}
 }

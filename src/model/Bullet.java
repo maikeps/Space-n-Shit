@@ -42,4 +42,24 @@ public class Bullet extends GameObject implements Movable{
 	public int getDamage() {
 		return damage;
 	}
+
+	@Override
+	public boolean isGoingLeft() {
+		return direction.getComponent().getX() < 0;
+	}
+
+	@Override
+	public boolean isGoingRight() {
+		return direction.getComponent().getX() > 0;
+	}
+
+	@Override
+	public boolean isGoingUp() {
+		return direction.getComponent().getY() < 0;
+	}
+
+	@Override
+	public boolean isGoingDown() {
+		return direction.getComponent().getY() > 0;
+	}
 }

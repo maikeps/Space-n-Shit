@@ -1,5 +1,6 @@
 package model;
 
+import model.interfaces.Diable;
 import model.interfaces.Movable;
 import model.interfaces.Shootable;
 import engine.GameObject;
@@ -11,14 +12,16 @@ import engine.physics.Vector2D;
 public class PlayerShip extends GameObject implements Movable, Shootable, Diable{
 	
 	private int hp;
-	private boolean died;
+	private boolean isDead;
 	private int gunCooldown;
 	private int gunBaseCooldown;
+	private Vector direction;
 	
 	public PlayerShip(Position2D position, Dimension2D dimension, float speed, Game game, int hp) {
 		super(position, dimension, speed, game);
 		this.hp = hp;
 		gunBaseCooldown = 10;
+		direction = new Vector2D(0, 0);
 	}
 
 	@Override
@@ -43,6 +46,7 @@ public class PlayerShip extends GameObject implements Movable, Shootable, Diable
 
 	@Override
 	public void move(Vector direction) {
+		this.direction = direction; 
 		position.applyVector(direction);
 	}
 
@@ -50,7 +54,27 @@ public class PlayerShip extends GameObject implements Movable, Shootable, Diable
 	public void loseHp(int amount) {
 		hp -= amount;
 		if(hp <= 0){
-			died = true;
+			isDead = true;
 		}
+	}
+
+	@Override
+	public boolean isGoingLeft() {
+		return direction.getComponent().getX() < 0;
+	}
+
+	@Override
+	public boolean isGoingRight() {
+		return direction.getComponent().getX() > 0;
+	}
+
+	@Override
+	public boolean isGoingUp() {
+		return direction.getComponent().getY() < 0;
+	}
+
+	@Override
+	public boolean isGoingDown() {
+		return direction.getComponent().getY() > 0;
 	}
 }

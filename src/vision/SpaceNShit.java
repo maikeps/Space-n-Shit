@@ -1,8 +1,5 @@
 package vision;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import model.Game;
 import model.PlayerShip;
 
@@ -13,9 +10,8 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
 
-import engine.GameObject;
+import engine.interfaces.Vector;
 import engine.physics.Dimension2D;
-import engine.physics.Position2D;
 import engine.physics.Vector2D;
 
 public class SpaceNShit extends BasicGameState{
@@ -23,21 +19,19 @@ public class SpaceNShit extends BasicGameState{
 	public static final int ID = 1;
 	
 	public Game spaceShooterGame;
-	public List<Drawer> drawers;
+	public Drawer drawer;
 	
 	@Override
 	public void init(GameContainer gc, StateBasedGame game)
 			throws SlickException {
 		this.spaceShooterGame = new Game(new Dimension2D(gc.getWidth(), gc.getHeight()));
-		updateDrawers();
+		drawer = new Drawer();
 	}
 
 	@Override
 	public void render(GameContainer gc, StateBasedGame game, Graphics g)
 			throws SlickException {
-		for(Drawer drawer : drawers){
-			drawer.draw(gc, game, g);
-		}
+		drawer.draw(g);
 	}
 
 	@Override
@@ -45,25 +39,20 @@ public class SpaceNShit extends BasicGameState{
 			throws SlickException {
 		getInput(gc);
 		this.spaceShooterGame.update();
-		updateDrawers();
-	}
-
-	private void updateDrawers() {
-		drawers = new ArrayList<Drawer>();
-		for(GameObject gameObject : spaceShooterGame.getGameObjects()){
-			drawers.add(new Drawer((Position2D)gameObject.getPosition(), (Dimension2D)gameObject.getDimension()));
-		}
+		drawer.updateImages(spaceShooterGame.getGameObjects());
 	}
 	
 	public void getInput(GameContainer gc){
 		Input input = gc.getInput();
 		PlayerShip player = spaceShooterGame.getPlayer();
 
+		Vector direction = new Vector2D(0, 0);
 		if(input.isKeyDown(input.KEY_LEFT)){
-			player.move(new Vector2D(-player.getSpeed(), 0));
+			direction = new Vector2D(-player.getSpeed(), 0);
 		}else if(input.isKeyDown(input.KEY_RIGHT)){
-			player.move(new Vector2D(player.getSpeed(), 0));
+			direction = new Vector2D(player.getSpeed(), 0);
 		}
+		player.move(direction);
 		
 		if(input.isKeyDown(input.KEY_SPACE)){
 			player.shoot();
